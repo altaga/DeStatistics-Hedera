@@ -1,0 +1,34 @@
+.chartSubContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content:stretch;
+  align-items: center;
+}
+
+.headerTitle {
+  color: black;
+  font-size: 1.3rem;
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.includeDB {
+  padding-left: 10px;
+}
+
+.address {
+  color: black;
+  font-size: 1.1rem;
+  font-family:"Roboto", sans-serif;
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+
+

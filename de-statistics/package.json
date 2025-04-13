@@ -1,0 +1,46 @@
+{
+  "name": "de-statistics",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@fontsource/roboto": "^5.2.5",
+    "@glif/filecoin-address": "^3.0.12",
+    "@hashgraph/hedera-wallet-connect": "^1.5.1",
+    "@hashgraph/proto": "^2.17.0-beta.1",
+    "@hashgraph/sdk": "^2.62.0",
+    "@mui/icons-material": "^6.4.8",
+    "@mui/material": "^6.4.8",
+    "@mui/x-charts": "^7.28.0",
+    "@privy-io/react-auth": "^2.6.4",
+    "@recallnet/chains": "^0.0.7",
+    "@recallnet/contracts": "^0.0.4",
+    "@recallnet/sdk": "^0.0.8",
+    "@walletconnect/modal": "^2.7.0",
+    "@walletconnect/modal-core": "^2.7.0",
+    "@walletconnect/qrcode-modal": "^1.8.0",
+    "@walletconnect/utils": "^2.19.2",
+    "decimal.js": "^10.5.0",
+    "ethers": "^5.7.2",
+    "mui-file-input": "^7.0.0",
+    "next": "15.2.3",
+    "react": "^19.0.0",
+    "react-diff-viewer": "^3.1.1",
+    "react-dom": "^19.0.0",
+    "react-linkify": "^1.0.0-alpha",
+    "react-toastify": "^11.0.5",
+    "viem": "^2.26.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "eslint": "^9",
+    "eslint-config-next": "15.2.3"
+  }
+}
