@@ -6,6 +6,7 @@ import { Client, FileContentsQuery, PrivateKey } from "@hashgraph/sdk";
 const { HEDERA_PRIVKEY, HEDERA_ID, DB_FILE_ID } = process.env;
 const HEDERA_PRIVKEY_DER = PrivateKey.fromStringDer(HEDERA_PRIVKEY);
 
+// Get Functions
 export async function getDB(key) {
   return new Promise(async (resolve, reject) => {
     let client;
@@ -43,7 +44,6 @@ export async function getAllFetch() {
   return new Promise(async (resolve) => {
     let client;
     try {
-      console.log("Fetching data...");
       client = Client.forMainnet();
       client.setOperator(HEDERA_ID, HEDERA_PRIVKEY_DER);
       const query = new FileContentsQuery().setFileId(DB_FILE_ID);
@@ -55,6 +55,69 @@ export async function getAllFetch() {
       resolve(null);
     } finally {
       client.close();
+    }
+  });
+}
+
+// Push Functions
+
+export async function createBucketandPushFile(object) {
+  const { key, file } = object;
+  return new Promise(async (resolve, reject) => {
+    try {
+      const {
+        result: { bucket },
+      } = await bucketManager.create();
+      console.log(bucket);
+      await bucketManager.add(bucket, key, file);
+      resolve(bucket);
+    } catch (e) {
+      console.log(e);
+      resolve(false);
+    }
+  });
+}
+
+export async function pushFile(object) {
+  const { key, file, bucket } = object;
+  return new Promise(async (resolve, reject) => {
+    try {
+      await bucketManager.add(bucket, key, file, {
+        overwrite: true,
+      });
+      resolve(true);
+    } catch (e) {
+      console.log(e);
+      resolve(false);
+    }
+  });
+}
+
+export async function updateMainDB(metadata) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { result: object } = await bucketManager.get(
+        process.env.RECALL_BUCKET,
+        "datasets"
+      );
+      const contents = new TextDecoder().decode(object);
+      let parsed = JSON.parse(contents);
+      parsed.data = [
+        ...parsed.data.filter((d) => d.key !== metadata.key),
+        metadata,
+      ];
+      console.log(parsed);
+      const content = new TextEncoder().encode(JSON.stringify(parsed));
+      const file = new File([content], "data.json", {
+        type: "application/json",
+      });
+      await bucketManager.add(process.env.RECALL_BUCKET, "datasets", file, {
+        overwrite: true,
+      });
+      resolve(true);
+    } catch (e) {
+      console.log(e);
+      resolve(false);
     }
   });
 }
