@@ -1,8 +1,13 @@
 "use client";
+import { createAndPushFile, updateMainDB } from "@/actions/hederaServer";
 import { verifyDB } from "@/actions/lilypadServer";
-import { createBucketandPushFile, pushFile, updateMainDB } from "@/actions/recallServer";
 import styles from "@/app/upload/page.module.css";
-import { generateString, getUnixTimestamp, sleep } from "@/utils/lib";
+import {
+  findHederaAccount,
+  generateString,
+  getUnixTimestamp,
+  sleep,
+} from "@/utils/lib";
 import { Box, LinearProgress, MenuItem, TextField } from "@mui/material";
 import Select from "@mui/material/Select";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
@@ -22,6 +27,7 @@ export default function Upload({ data }) {
   const [fileContent, setFileContent] = useState("");
   const [verified, setVerified] = useState(false);
   const [activeAddress, setActiveAddress] = useState("");
+  const [hederaAddress, setHederaAddress] = useState("");
   // Versions
   const [dataset, setDataset] = useState([
     { title: "Create a new dataset", version: 0 },
@@ -53,7 +59,7 @@ export default function Upload({ data }) {
     await signer.signMessage("Upload DB");
     setStage(1);
     setStatus("AI Verification...");
-    const verified = await verifyDB(walletActive.address, fileContent);
+    const verified = await verifyDB(activeAddress, fileContent);
     setVerified(verified);
     if (!verified) {
       setBuffer(67);
@@ -65,9 +71,9 @@ export default function Upload({ data }) {
     setStatus("Uploading...");
     setBuffer(34);
     let metadata = {};
+    const fileId = await createAndPushFile(file);
+    if (fileId === false) return;
     if (selector === 0) {
-      const bucket = await createBucketandPushFile({ key: "database1", file });
-      if (bucket === false) return;
       metadata = {
         key: generateString(10),
         uploader: activeAddress,
@@ -76,21 +82,14 @@ export default function Upload({ data }) {
         updated: getUnixTimestamp(),
         title,
         description,
-        bucket,
+        fileId: [fileId],
         verified,
-        version: 1,
       };
     } else {
-      const res = await pushFile({
-        key: `database${dataset[selector].version + 1}`,
-        file,
-        bucket: dataset[selector].bucket,
-      });
-      if (!res) return;
       metadata = {
         ...dataset[selector],
         updated: getUnixTimestamp(),
-        version: dataset[selector].version + 1,
+        fileId: [...dataset[selector].fileId, fileId],
       };
     }
     setBuffer(67);
@@ -116,6 +115,7 @@ export default function Upload({ data }) {
 
   useEffect(() => {
     if (activeAddress === "") return;
+    if (JSON.stringify(data) === "{}") return;
     const datasets = data.filter(
       (data_temp) => data_temp.uploader === activeAddress
     );
@@ -129,7 +129,9 @@ export default function Upload({ data }) {
       (wallet) => wallet.connectorType === user.wallet.connectorType
     );
     if (!walletActive) return;
-    setActiveAddress(walletActive.address);
+    findHederaAccount(walletActive.address).then((address) => {
+      setActiveAddress(address);
+    });
   }, [data, wallet]);
 
   return (

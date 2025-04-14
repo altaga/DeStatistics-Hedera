@@ -1,10 +1,81 @@
 "use server";
 
 import { findObjectByKey, parseCSVtoJSON_t1 } from "@/utils/lib";
-import { Client, FileContentsQuery, PrivateKey } from "@hashgraph/sdk";
+import {
+  Client,
+  FileAppendTransaction,
+  FileContentsQuery,
+  FileCreateTransaction,
+  Hbar,
+  PrivateKey,
+} from "@hashgraph/sdk";
+import { promises as fs } from "fs";
 
 const { HEDERA_PRIVKEY, HEDERA_ID, DB_FILE_ID } = process.env;
 const HEDERA_PRIVKEY_DER = PrivateKey.fromStringDer(HEDERA_PRIVKEY);
+
+const MAX_FILE_CHUNK_SIZE = 5 * 1024; // 5kb
+const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+
+function cleanText(text) {
+  return text.replace(/(["'])(.*?)\1|[\n\r\s]+/g, (_, p1, p2) => {
+    if (p1) {
+      // If the match is inside quotes, return it unchanged
+      return `${p1}${p2}${p1}`;
+    } else {
+      // Otherwise, remove the match
+      return "";
+    }
+  });
+}
+
+async function createFile(client) {
+  const transaction = await new FileCreateTransaction()
+    .setKeys([HEDERA_PRIVKEY_DER])
+    .freezeWith(client);
+  const signTx = await transaction.sign(HEDERA_PRIVKEY_DER);
+  const txTransferResponse = await signTx.execute(client);
+  const receipt = await txTransferResponse.getReceipt(client);
+  return receipt.fileId.toString();
+}
+
+async function updateFile(client, file) {
+  const cleanFile = cleanText(file);
+  const transaction = await new FileCreateTransaction()
+    .setKeys([PRIVATE_KEY]) //A different key then the client operator key
+    .setContents(cleanFile)
+    .setMaxTransactionFee(new Hbar(2))
+    .freezeWith(client);
+  const signTx = await transaction.sign(HEDERA_PRIVKEY_DER);
+  const txTransferResponse = await signTx.execute(client);
+  const receipt = await txTransferResponse.getReceipt(client);
+  return receipt.fileId.toString();
+}
+
+async function createFileFull(client, file) {
+  const transaction = await new FileCreateTransaction()
+    .setKeys([HEDERA_PRIVKEY_DER])
+    .setContents(file)
+    .setMaxTransactionFee(new Hbar(2))
+    .freezeWith(client);
+  const signTx = await transaction.sign(HEDERA_PRIVKEY_DER);
+  const txTransferResponse = await signTx.execute(client);
+  const receipt = await txTransferResponse.getReceipt(client);
+  return receipt.fileId.toString();
+}
+
+async function appendFile(client, file, fileId) {
+  const transaction = await new FileAppendTransaction()
+    .setFileId(fileId)
+    .setContents(file)
+    .setChunkSize(MAX_FILE_CHUNK_SIZE)
+    .setMaxTransactionFee(new Hbar(20))
+    .freezeWith(client);
+  const signTx = await transaction.sign(HEDERA_PRIVKEY_DER);
+  const txTransferResponse = await signTx.execute(client);
+  const receipt = await txTransferResponse.getReceipt(client);
+  return receipt.status;
+}
 
 // Get Functions
 export async function getDB(key) {
@@ -29,7 +100,7 @@ export async function getDB(key) {
       const extra = {
         ...temp,
         version: temp.fileId.length,
-      }
+      };
       resolve({ data: values, contents, ...extra });
     } catch (e) {
       console.log(e);
@@ -61,63 +132,49 @@ export async function getAllFetch() {
 
 // Push Functions
 
-export async function createBucketandPushFile(object) {
-  const { key, file } = object;
-  return new Promise(async (resolve, reject) => {
+export async function createAndPushFile(file) {
+  return new Promise(async (resolve) => {
+    let client;
     try {
-      const {
-        result: { bucket },
-      } = await bucketManager.create();
-      console.log(bucket);
-      await bucketManager.add(bucket, key, file);
-      resolve(bucket);
+      client = Client.forMainnet();
+      client.setOperator(HEDERA_ID, HEDERA_PRIVKEY_DER);
+      const fileSize = file.byteLength;
+      if (fileSize > MAX_FILE_SIZE) throw new Error("File too large");
+      let fileId;
+      let status = "SUCCESS";
+      const content = await fs.readFile(file);
+      if (file.byteLength <= MAX_FILE_CHUNK_SIZE) {
+        fileId = await createFileFull(client, content); // fileId
+      } else {
+        fileId = await createFile(client);
+        status = await appendFile(client, content, fileId);
+      }
+      if (status.toString() !== "SUCCESS") throw new Error(status);
+      resolve(fileId);
     } catch (e) {
       console.log(e);
       resolve(false);
-    }
-  });
-}
-
-export async function pushFile(object) {
-  const { key, file, bucket } = object;
-  return new Promise(async (resolve, reject) => {
-    try {
-      await bucketManager.add(bucket, key, file, {
-        overwrite: true,
-      });
-      resolve(true);
-    } catch (e) {
-      console.log(e);
-      resolve(false);
+    } finally {
+      client.close();
     }
   });
 }
 
 export async function updateMainDB(metadata) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve) => {
+    let client;
     try {
-      const { result: object } = await bucketManager.get(
-        process.env.RECALL_BUCKET,
-        "datasets"
-      );
-      const contents = new TextDecoder().decode(object);
-      let parsed = JSON.parse(contents);
-      parsed.data = [
-        ...parsed.data.filter((d) => d.key !== metadata.key),
-        metadata,
-      ];
-      console.log(parsed);
-      const content = new TextEncoder().encode(JSON.stringify(parsed));
-      const file = new File([content], "data.json", {
-        type: "application/json",
-      });
-      await bucketManager.add(process.env.RECALL_BUCKET, "datasets", file, {
-        overwrite: true,
-      });
+      client = Client.forMainnet();
+      client.setOperator(HEDERA_ID, HEDERA_PRIVKEY_DER);
+      let content = cleanText(JSON.stringify(metadata));
+      const status = await updateFile(client, content);
+      if (status.toString() !== "SUCCESS") throw new Error(status);
       resolve(true);
     } catch (e) {
       console.log(e);
       resolve(false);
+    } finally {
+      client.close();
     }
   });
 }
