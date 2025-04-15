@@ -1,5 +1,5 @@
 "use client";
-import { checkServer } from "@/actions/serverHealth";
+import { checkServer } from "@/actions/ollamaServer";
 import styles from "@/app/components/headerComponent.module.css";
 import { findHederaAccount } from "@/utils/lib";
 import { Button, ButtonGroup } from "@mui/material";

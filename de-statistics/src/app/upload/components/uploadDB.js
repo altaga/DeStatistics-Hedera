@@ -1,6 +1,6 @@
 "use client";
 import { createAndPushFile, updateMainDB } from "@/actions/hederaServer";
-import { verifyDB } from "@/actions/lilypadServer";
+import { verifyDB } from "@/actions/ollamaServer";
 import styles from "@/app/upload/page.module.css";
 import {
   findHederaAccount,

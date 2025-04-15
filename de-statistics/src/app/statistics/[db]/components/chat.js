@@ -1,21 +1,17 @@
 'use client';
-import React, { useEffect, useRef, useState } from "react";
-import SendIcon from "@mui/icons-material/Send";
+import { runGraph } from "@/actions/ollamaServer";
 import AutoResizingTextArea from "@/app/statistics/[db]/components/autoResTextArea";
-import { Button } from "@mui/material";
 import styles from "@/app/statistics/[db]/components/chat.module.css";
-import Linkify from "react-linkify";
-import {runGraph} from "@/actions/lilypadServer";
 import ContextModule from "@/utils/contextModule";
+import SendIcon from "@mui/icons-material/Send";
+import { Button } from "@mui/material";
 import {
-  useActiveWallet,
   usePrivy,
-  useSendTransaction,
-  useWallets,
+  useWallets
 } from "@privy-io/react-auth";
 import { ethers } from "ethers";
-import { abi } from "@/contracts/contract";
-import { resolve } from "styled-jsx/css";
+import React, { useEffect, useRef, useState } from "react";
+import Linkify from "react-linkify";
 
 export default function Chat({ bucket, update }) {
   // Context

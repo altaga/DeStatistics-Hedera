@@ -15,7 +15,7 @@ export default function SimpleCharts({ data }) {
   const myContext = React.useContext(ContextModule);
   const [selector, setSelector] = useState(0);
   const [version, setVersion] = useState(0); // Based on position
-  const [checked, setChecked] = useState(true);
+  const [checked, setChecked] = useState(false);
   const [dataset, setDataset] = useState(baseStat);
   const router = useRouter();
 
