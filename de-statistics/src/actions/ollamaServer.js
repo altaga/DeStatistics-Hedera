@@ -43,10 +43,10 @@ export async function runGraph(message, tempContext = "") {
   });
 }
 
-export async function verifyDB(address, context) {
+export async function verifyDB(db, accountId) {
   const body = JSON.stringify({
-    message: address,
-    context,
+    db,
+    accountId,
   });
 
   return new Promise((resolve) => {

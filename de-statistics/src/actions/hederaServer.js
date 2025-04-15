@@ -1,11 +1,12 @@
 "use server";
 
-import { findObjectByKey, parseCSVtoJSON_t1 } from "@/utils/lib";
+import { addOrUpdateObject, findObjectByKey, parseCSVtoJSON_t1 } from "@/utils/lib";
 import {
   Client,
   FileAppendTransaction,
   FileContentsQuery,
   FileCreateTransaction,
+  FileUpdateTransaction,
   Hbar,
   PrivateKey,
 } from "@hashgraph/sdk";
@@ -41,15 +42,15 @@ async function createFile(client) {
 
 async function updateFile(client, file) {
   const cleanFile = cleanText(file);
-  const transaction = await new FileCreateTransaction()
-    .setKeys([PRIVATE_KEY]) //A different key then the client operator key
+  const transaction = await new FileUpdateTransaction()
+    .setFileId(DB_FILE_ID)
     .setContents(cleanFile)
     .setMaxTransactionFee(new Hbar(2))
     .freezeWith(client);
   const signTx = await transaction.sign(HEDERA_PRIVKEY_DER);
   const txTransferResponse = await signTx.execute(client);
   const receipt = await txTransferResponse.getReceipt(client);
-  return receipt.fileId.toString();
+  return receipt.status;
 }
 
 async function createFileFull(client, file) {
@@ -132,22 +133,21 @@ export async function getAllFetch() {
 
 // Push Functions
 
-export async function createAndPushFile(file) {
+export async function createAndPushFile(file, contentFile) {
   return new Promise(async (resolve) => {
     let client;
     try {
       client = Client.forMainnet();
       client.setOperator(HEDERA_ID, HEDERA_PRIVKEY_DER);
-      const fileSize = file.byteLength;
+      const fileSize = file.size;
       if (fileSize > MAX_FILE_SIZE) throw new Error("File too large");
       let fileId;
       let status = "SUCCESS";
-      const content = await fs.readFile(file);
       if (file.byteLength <= MAX_FILE_CHUNK_SIZE) {
-        fileId = await createFileFull(client, content); // fileId
+        fileId = await createFileFull(client, contentFile); // fileId
       } else {
         fileId = await createFile(client);
-        status = await appendFile(client, content, fileId);
+        status = await appendFile(client, contentFile, fileId);
       }
       if (status.toString() !== "SUCCESS") throw new Error(status);
       resolve(fileId);
@@ -166,7 +166,11 @@ export async function updateMainDB(metadata) {
     try {
       client = Client.forMainnet();
       client.setOperator(HEDERA_ID, HEDERA_PRIVKEY_DER);
-      let content = cleanText(JSON.stringify(metadata));
+      const db = await getAllFetch()
+      const object = {
+        data: addOrUpdateObject(db, metadata),
+      };
+      let content = cleanText(JSON.stringify(object));
       const status = await updateFile(client, content);
       if (status.toString() !== "SUCCESS") throw new Error(status);
       resolve(true);

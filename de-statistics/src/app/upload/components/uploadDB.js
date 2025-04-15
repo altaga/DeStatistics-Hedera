@@ -13,7 +13,7 @@ import Select from "@mui/material/Select";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { ethers } from "ethers";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState, version } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function Upload({ data }) {
   const { user } = usePrivy();
@@ -27,7 +27,6 @@ export default function Upload({ data }) {
   const [fileContent, setFileContent] = useState("");
   const [verified, setVerified] = useState(false);
   const [activeAddress, setActiveAddress] = useState("");
-  const [hederaAddress, setHederaAddress] = useState("");
   // Versions
   const [dataset, setDataset] = useState([
     { title: "Create a new dataset", version: 0 },
@@ -59,7 +58,7 @@ export default function Upload({ data }) {
     await signer.signMessage("Upload DB");
     setStage(1);
     setStatus("AI Verification...");
-    const verified = await verifyDB(activeAddress, fileContent);
+    const verified = await verifyDB(fileContent, activeAddress);
     setVerified(verified);
     if (!verified) {
       setBuffer(67);
@@ -71,7 +70,7 @@ export default function Upload({ data }) {
     setStatus("Uploading...");
     setBuffer(34);
     let metadata = {};
-    const fileId = await createAndPushFile(file);
+    const fileId = await createAndPushFile(file, fileContent);
     if (fileId === false) return;
     if (selector === 0) {
       metadata = {

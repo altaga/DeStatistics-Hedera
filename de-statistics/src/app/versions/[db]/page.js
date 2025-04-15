@@ -3,7 +3,7 @@ import styles from "@/app/versions/[db]/page.module.css";
 import ReactDiff from "./components/reactDiff";
 import { getAllFetch, getDB } from "@/actions/hederaServer";
 
-export const revalidate = 3600; // Check every 60 seconds for updates
+export const revalidate = 60; // Check every 60 seconds for updates
 export const dynamicParams = true; // Dynamically generate params
 
 export async function generateStaticParams() {

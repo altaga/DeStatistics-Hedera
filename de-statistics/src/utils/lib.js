@@ -89,3 +89,18 @@ export async function findEthAccount(address) {
     return null;
   }
 }
+
+export function addOrUpdateObject(array, newObject) {
+  let tempArray = [...array];
+  const index = tempArray.findIndex((item) => item.key === newObject.key);
+
+  if (index !== -1) {
+    // Replace the object with the same key
+    tempArray[index] = newObject;
+  } else {
+    // Add the new object to the array
+    tempArray.push(newObject);
+  }
+
+  return tempArray;
+}

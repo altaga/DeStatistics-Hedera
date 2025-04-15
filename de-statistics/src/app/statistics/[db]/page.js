@@ -6,7 +6,7 @@ import Link from "next/link";
 import Donation from "./components/donation";
 import Indicator from "./components/indicators";
 
-export const revalidate = 3600; // Check every 60 seconds for updates
+export const revalidate = 60; // Check every 60 seconds for updates
 export const dynamicParams = true; // Dynamically generate params
 
 export async function generateStaticParams() {
