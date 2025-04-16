@@ -9,7 +9,7 @@ const getAllDBs = unstable_cache(
     return await getAllFetch();
   },
   ["posts"],
-  { revalidate: 3600, tags: ["posts"] } // Cache for 1 hour
+  { revalidate: 60, tags: ["posts"] } // Cache for 1 hour
 );
 
 export default async function Main() {

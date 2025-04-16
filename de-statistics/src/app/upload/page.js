@@ -9,7 +9,7 @@ const getAllDBs = unstable_cache(
     return await getAllFetch();
   },
   ["posts"],
-  { revalidate: 60, tags: ["posts"] }
+  { revalidate: 60, tags: ["post"] }
 );
 
 export default async function Page() {
