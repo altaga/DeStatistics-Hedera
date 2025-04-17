@@ -22,8 +22,8 @@ DeStatistics is a Web3 platform where AI Agents verify public data, ensure trans
 
 - [Hedera AgentKit](#hedera-agentkit): With this service running on our langchain workflow we distribute rewards of our DES ERC20 token based on the AI ​​DB verification results.
 
-- [Hedera HCS-10](#hcs-10): Utilizamos este standard para realizar la comunicacion entre los agentes, con el fin de mejorar la independencia y seguridad de los servicios.
-
+- [Hedera HCS-10](#hcs-10): We used this standard to communicate between agents, in order to improve the independence and security of our services.
+- 
 - [Hedera EVM](#hedera-evm-interface): We used the EVM to make donations, verify usersa and verify database uploaders.
 
 # File Storage Service:
@@ -93,24 +93,24 @@ Having a secure, fast, and, above all, accessible storage source for our platfor
 
 # Hedera EVM Interface:
 
-La interfaz EVM de hedera es una forma sencilla que los usuarios puedan acceder a todas las funciones de DeStatistics con wallets como Metamask.
+The Hedera EVM interface is a simple way for users to access all of DeStatistics' features with wallets like Metamask.
 
 ## Signature Verification:
 
-- Cuando el usuario quiere interaccionar con nuestro AI Agent DeSmond, este tiene que realizar una firma para confirmar que es una wallet valida.
+- When the user wants to interact with our AI Agent DeSmond, he has to make a signature to confirm that it is a valid wallet.
 
     <img src="./images/interact1.png">
 
-- Por el momento aunque pedimos una firma, este servicio de monetizara en el futuro costando 1 centavo de dollar por Query.
+- For now, although we require a signature, this service will be monetized in the future, costing 1 cent per query.
 
 ## Donations:
 
-- Ademas de la compensacion de DES tokens que realizamos mediante nuestro AI Agent, tambien promovemos que los usuarios realicen donaciones de Hbar a los uploaders.
+- In addition to the DES token compensation we provide through our AI Agent, we also encourage users to donate Hbar to uploaders.
 
     <img src="./images/donation1.png">
 
-- Ademas todas las donaciones son gestionadas mediante nuestro smart contract en Hedera Mainnet y estas de muestran en el perfil del Uploader en cada Database.
-
+- Additionally, all donations are managed through our smart contract on Hedera Mainnet and are displayed in the Uploader profile in each Database.
+  
     <img src="./images/donation2.png">
 
 ---
@@ -125,11 +125,11 @@ Within the entire concept of our platform, we have two functionalities that best
 
 ## HCS-10:
 
-El nuevo standard de Hedera nos permitio realizar una comunicacion mas segurda y sencilla de nuestros agentes, debido a que hay momentos donde se deben ejecutar de forma automatizada transferencias de rewards a los usuarios, ocupabamos un canal seguro para esta automatizacion.
+The new Hedera standard allowed us to make communication between our agents more secure and simple. Because there are times when reward transfers to users must be executed automatically, we needed a secure channel for this automation.
 
 ### Communication:
 
-- En nuestra plataforma necesitabamos dos agentes que pudieran comunicarse entre si, asi que cada uno de los agentes, los cuales estan desarrollados en javascript, debian de tener habilitado el modulo de comunicacion HCS10Client.
+- On our platform, we needed two agents that could communicate with each other, so each of the agents, which are developed in JavaScript, had to have the HCS10Client communication module enabled.
 
     ```javascript
     const client = new HCS10Client({
@@ -139,7 +139,7 @@ El nuevo standard de Hedera nos permitio realizar una comunicacion mas segurda y
     });
     ```
 
-- Mediante este modulo es posible mandar mensajes entre agentes de forma sencilla, en particular este codigo lo tiene el agente general, que se encarga de las queries generales de los usuarios y a su vez se comunica con el agente de rewards despues de verificar una DB.
+- This module makes it possible to send messages between agents easily. This code is used by the general agent, who handles general user queries and, in turn, communicates with the rewards agent after verifying a database.
 
     ```javascript
     client
@@ -154,7 +154,7 @@ El nuevo standard de Hedera nos permitio realizar una comunicacion mas segurda y
 
     HCS-11 Profile Link: [HASHSCAN](https://hashscan.io/mainnet/account/0.0.9085638)
 
-- Sin embargo el protocolo para recibir mensajes es mediante polling y leyendo continuamente a la red de hedera, asi que nosotros modificamos el codigo ejemplo que se nos proporciono en la pagina del hackathon para recibir los mensajes de forma mas sencilla en nuestro agente.
+- However, the protocol for receiving messages is through polling and continuously reading from the Hedera network, so we modified the example code provided to us on the hackathon page to receive messages more easily in our agent.
 
     ```javascript
     const monitor = new AgentCommunicationHandler(
@@ -176,7 +176,7 @@ El nuevo standard de Hedera nos permitio realizar una comunicacion mas segurda y
 - [Custom Communication Handler](./hedera-agent-HCS/lib.js)
 - [RegisterAndCreateAgent](./deploy-scripts/createAgent.js)
 
-## Ai Agent Tools:
+## AI Agent Tools:
 
 The chat within the platform is intended to provide the user with an assistant to resolve general queries or more complex tasks.
 
