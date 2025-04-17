@@ -11,6 +11,7 @@
   "description": "",
   "dependencies": {
     "@hashgraph/sdk": "^2.62.0",
+    "@hashgraphonline/standards-sdk": "^0.0.74",
     "@langchain/community": "^0.3.40",
     "@langchain/core": "^0.3.44",
     "@langchain/langgraph": "^0.2.63",

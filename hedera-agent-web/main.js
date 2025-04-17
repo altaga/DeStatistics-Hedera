@@ -17,8 +17,16 @@ import dotenv from "dotenv";
 import { HederaAgentKit } from "hedera-agent-kit";
 import { v4 as uuidv4 } from "uuid";
 import { get_encoding } from "tiktoken";
+import { HCS10Client } from "@hashgraphonline/standards-sdk";
 
-const apyKey = process.env.MY_API_KEY;
+const {
+  API_KEY,
+  AGENT_ID,
+  AGENT_PRIVATE_KEY,
+  AGENT_IN_TOPIC,
+} = process.env;
+
+const network = "mainnet";
 
 // Env and Configs
 dotenv.config();
@@ -26,14 +34,13 @@ const config = { configurable: { thread_id: uuidv4() } };
 
 // Hedera Settings ______________________________________________________________________________
 
-const MY_PRIVATE_KEY_DER = PrivateKey.fromStringDer(process.env.MY_PRIVATE_KEY);
+const AGENT_PRIVATE_KEY_DER = PrivateKey.fromStringDer(AGENT_PRIVATE_KEY);
 
-const hederaAgentKit = new HederaAgentKit(
-  process.env.MY_ACCOUNT_ID,
-  MY_PRIVATE_KEY_DER.toStringRaw(),
-  MY_PRIVATE_KEY_DER.publicKey.toStringRaw(),
-  "mainnet"
-);
+const client = new HCS10Client({
+  network,
+  operatorId: AGENT_ID,
+  operatorPrivateKey: AGENT_PRIVATE_KEY_DER.toStringRaw(),
+});
 
 // Classes
 const webSearchTool = new DuckDuckGoSearch({
@@ -58,37 +65,6 @@ const llm = new ChatOllama({
   numCtx: 1024 * 25,
 });
 
-// Hedera Tools
-
-const transferToken = tool(
-  async ({ token_id, to_account_id, amount }) => {
-    console.log("hedera_transfer_token tool has been called");
-    const transferResult = await hederaAgentKit.transferToken(
-      TokenId.fromString(token_id),
-      to_account_id,
-      parseInt(amount) * 10 ** 3 // Send Tokens Length * 10 ** 3
-    );
-    return JSON.stringify({
-      status: transferResult.status,
-      amount: amount,
-      unit: "DES",
-    });
-  },
-  {
-    name: "hedera_transfer_token_mod",
-    description: `Transfer fungible tokens on Hedera
-      Inputs (input is a JSON string):
-      token_id: string, the ID of the token to transfer e.g. 0.0.123456,
-      to_account_id: string, the account ID to transfer to e.g. 0.0.789012,
-      amount: number, the amount of tokens to transfer e.g. 100 in base unit`,
-    schema: z.object({
-      token_id: z.string(),
-      to_account_id: z.string(),
-      amount: z.string(),
-    }),
-  }
-);
-
 // Tools
 
 const responseFormatterTool = tool(async () => {}, {
@@ -105,7 +81,7 @@ const databaseTool = tool(
   {
     name: "database",
     description:
-      "This tool activates only when a database context has been explicitly provided as part of the conversation.",
+      "This tool activates only when a database or DB has been explicitly provided as part of the conversation. Trigger this tool when the user provides a database or DB as part of the conversation.",
     schema: z.object({
       database: z.string(),
     }),
@@ -163,10 +139,9 @@ function setInput(input) {
 }
 
 // Workflow Tools
-const my_tools = [webSearch, fallbackTool, transferToken, databaseTool];
+const my_tools = [webSearch, fallbackTool, databaseTool];
 const toolsNode = new ToolNode(my_tools);
-const llm_with_tools = llm.bindTools([webSearch, fallbackTool]);
-const llm_with_hedera_tools = llm.bindTools([transferToken]);
+const llm_with_tools = llm.bindTools([webSearch, fallbackTool, databaseTool]);
 const llm_with_responseFormatter = llm.bindTools([responseFormatterTool]);
 
 // Workflow Utils
@@ -210,48 +185,54 @@ app.use(express.json());
 // Routes
 app.get("/", async (request, response) => {
   const api_key = request.headers["x-api-key"];
-  if (api_key !== apyKey) {
+  if (api_key !== API_KEY) {
     return response.status(401).send("Unauthorized");
   }
-  return response.send("Hello World!");
+  return response.send({ result: "Hello World!" });
 });
 
 // Run Graph
 
 app.post("/run_graph", async (request, response) => {
   const api_key = request.headers["x-api-key"];
-  if (api_key !== apyKey) {
+  if (api_key !== API_KEY) {
     return response.status(401).send("Unauthorized");
   }
   const { message } = request.body;
+  console.log(message);
   const input = setInput(message);
   const output = await graph.invoke(input, config);
   console.log(output.messages[output.messages.length - 1].content);
-  return response.send(output.messages[output.messages.length - 1].content);
+  return response.send({
+    result: output.messages[output.messages.length - 1].content,
+  });
 });
 
 // Verify
 
 app.post("/verify_database", async (request, response) => {
   const api_key = request.headers["x-api-key"];
-  if (api_key !== apyKey) {
+  if (api_key !== API_KEY) {
     return response.status(401).send("Unauthorized");
   }
+  console.log("AI Analysis: Start...");
   const { db, accountId } = request.body;
   const result = await llm_with_responseFormatter.invoke(db);
   console.log("The AI analysis result is: ", result.tool_calls[0].args.result);
   if (result.tool_calls[0].args.result === true) {
     const enc = get_encoding("cl100k_base");
-    const value = enc.encode(db);
-    await llm_with_hedera_tools.invoke(
-      `Transfer ${value.length} token with token id 0.0.9070830 to account ${accountId}`
-    );
-    console.log(
-      `Transfer ${value.length} token with token id 0.0.9070830 to account ${accountId}`
-    );
+    const value = enc.encode(db).length.toString();
     enc.free();
+    client
+      .sendMessage(AGENT_IN_TOPIC, { accountId, value })
+      .then((res) =>
+        console.log(
+          "HCS-10 Communication result is: ",
+          res.status.toString()
+        )
+      );
   }
-  return response.send(result.tool_calls[0].args.result);
+  return response.send({ result: result.tool_calls[0].args.result });
 });
 
 console.log("Listening on port 8000");

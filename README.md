@@ -9,20 +9,22 @@ DeStatistics is a Web3 platform where AI Agents verify public data, ensure trans
 ### Check it out! it is live and on Hedera Mainnet!:
 - [**Web Page**](https://de-statistics-hedera.vercel.app/)
 - [**Demo Video**](pending...)
+- [**HCS-10**](#hcs-10)
+- [**Hedera Agent Kit**](#ai-agent-tools)
 
 ## System Diagram:
 
 <img src="./images/general.drawio.png">
 
-- Hedera Native: 
-  - [Hedera File Service](#file-storage-service): We used this service to provide a secure and decentralized source of storage for AI Agents in the databases and their verification and version control creating an auditable trail.
-  - [Hedera Token Service](#ai-agent-tools): Utilizamos este servicio para realizar nuestro DES token.
+- [Hedera File Service](#file-storage-service): We used this service to provide a secure and decentralized source of storage for AI Agents in the databases and their verification and version control creating an auditable trail.
 
-- [Hedera AgentKit](#hedera-agentkit): 
-  - With this service running on our langchain workflow we distribute rewards of our DES ERC20 token based on the AI ​​DB verification results. 
+- [Hedera Token Service](#ai-agent-tools): Utilizamos este servicio para realizar nuestro DES token.
 
-- [Hedera EVM](#hedera-evm-interface):
-  - We used the EVM to make donations to database uploaders
+- [Hedera AgentKit](#hedera-agentkit): With this service running on our langchain workflow we distribute rewards of our DES ERC20 token based on the AI ​​DB verification results.
+
+- [Hedera HCS10](#hcs-10): Utilizamos este standard para realizar la comunicacion entre los agentes, con el fin de mejorar la independencia y seguridad de los servicios.
+
+- [Hedera EVM](#hedera-evm-interface): We used the EVM to make donations, verify usersa and verify database uploaders.
 
 # File Storage Service:
 
@@ -50,6 +52,7 @@ Having a secure, fast, and, above all, accessible storage source for our platfor
 - [getDB](./de-statistics/src/actions/hederaServer.js)
 - [createAndPushFile](./de-statistics/src/actions/hederaServer.js)
 - [updateMainDB](./de-statistics/src/actions/hederaServer.js)
+- [WebPage Tab](./de-statistics/src/app/upload/page.js)
 
 ## Version Control:
 
@@ -64,10 +67,6 @@ Having a secure, fast, and, above all, accessible storage source for our platfor
 - And finally, at the bottom, we can see the raw data that has been modified completely. This allows us to audit the data from the source file.
 
     <img src="./images/version3.png">
-
-- Finally, the file organization performed at the Hedera level involves uploading multiple databases, but using the latest version number.
-
-    <img src="./images/version4.png">
 
 - And in the general repository where we store file references and versions. These are saved as follows.
 
@@ -86,9 +85,11 @@ Having a secure, fast, and, above all, accessible storage source for our platfor
     ```
 
 ---
+
 **All version control with Hedera at the code level are in the following links.**
 - [getDB](./de-statistics/src/actions/hederaServer.js)
 - [getAllFetch](./de-statistics/src/actions/hederaServer.js)
+- [WebPage Tab](./de-statistics/src/app/versions/[db]/page.js)
 
 # Hedera EVM Interface:
 
@@ -118,15 +119,68 @@ La interfaz EVM de hedera es una forma sencilla que los usuarios puedan acceder 
 - [Smart Contract Code](./contracts/DeStatistics.sol)
 - [Webpage Agent Interactions](./de-statistics/src/app/statistics/[db]/components/chat.js)
 
-# Hedera AgentKit:
+# Hedera AgentKit and HCS10:
 
-Within the entire concept of our platform, we have two functionalities that best represent the power of AI Agents with their interactions with the blockchain and decentralized data storage.
+Within the entire concept of our platform, we have two functionalities that best represent the power of AI Agents with their interactions with the blockchain, decentralized data storage and communication between agents with HCS-10.
+
+## HCS-10:
+
+El nuevo standard de Hedera nos permitio realizar una comunicacion mas segurda y sencilla de nuestros agentes, debido a que hay momentos donde se deben ejecutar de forma automatizada transferencias de rewards a los usuarios, ocupabamos un canal seguro para esta automatizacion.
+
+### Communication:
+
+En nuestra plataforma necesitabamos dos agentes que pudieran comunicarse entre si, asi que cada uno de los agentes, los cuales estan desarrollados en javascript, debian de tener habilitado el modulo de comunicacion HCS-10Client.
+
+    ```javascript
+    const client = new HCS10Client({
+        network,
+        operatorId: AGENT_ID,
+        operatorPrivateKey: AGENT_PRIVATE_KEY_DER.toStringRaw(),
+    });
+    ```
+
+Mediante este modulo es posible mandar mensajes entre agentes de forma sencilla, en particular este codigo lo tiene el agente general, que se encarga de las queries generales de los usuarios y a su vez se comunica con el agente de rewards despues de verificar una DB.
+
+    ```javascript
+    client
+        .sendMessage(AGENT_IN_TOPIC, { accountId, value })
+            .then((res) =>
+            console.log(
+                "HCS-10 Communication result is: ",
+                res.status.toString()
+            )
+    );
+    ```
+
+HCS-11 Profile Link: [HASHSCAN](https://hashscan.io/mainnet/account/0.0.9085638)
+
+Sin embargo el protocolo para recibir mensajes es mediante polling y leyendo continuamente a la red de hedera, asi que nosotros modificamos el codigo ejemplo que se nos proporciono en la pagina del hackathon para recibir los mensajes de forma mas sencilla en nuestro agente.
+
+    ```javascript
+    const monitor = new AgentCommunicationHandler(
+        client,
+        AGENT_IN_TOPIC,
+        AGENT_ID,
+        ["0.0.9085638"], // List of agents authorized to send messages to the agent.
+        (message) => sendTokens(message) // Callback function when the agent recieve a message
+    );
+    ```
+
+HCS-11 Profile Link: [HASHSCAN](https://hashscan.io/mainnet/account/0.0.9085558)
+
+---
+**The full code for the Agents and HCS-10 Communication is in the following links:**
+
+- [AI Agent General](./hedera-agent-web/main.js)
+- [AI Agent HCS](./hedera-agent-HCS/main.js)
+- [Custom Communication Handler](./hedera-agent-HCS/lib.js)
+- [RegisterAndCreateAgent](./deploy-scripts/createAgent.js)
 
 ## Ai Agent Tools:
 
 The chat within the platform is intended to provide the user with an assistant to resolve general queries or more complex tasks.
 
-- Send Tokens as Rewards: The AI Agent can transfer our DES token to any user who uploads a database and the AI ​​validates it for addition to our site. This reward is subject to the following tool.
+- Send Tokens as Rewards: The AI Agent can transfer via Hedera AgentKit our DES token to any user who uploads a database and the AI ​​validates it for addition to our site. This reward is subject to the following tool.
 
     ```javascript
     const transferToken = tool(
@@ -165,8 +219,6 @@ The chat within the platform is intended to provide the user with an assistant t
     - [Script](./deploy-scripts/createToken.js)
   - DES Token EVM Interface:
     - [Contract Code](./contracts/DeSToken.sol)
-  - Agent Code:
-    - [Code](./hedera-agent-server/main.js)
 
 - DB Analysis: The AI Agent can perform a complete analysis of a database by cross-checking it with the tools we'll discuss later and issue a verdict as to whether it's a valuable database or not. This verified data is then uploaded to the Recall network so it can be consumed by the website. [Example DB](./example-db/Taxes%20on%20exports.csv)
 
@@ -210,5 +262,6 @@ The chat within the platform is intended to provide the user with an assistant t
 ---
 **The full code for the AI Agent and WebPage is in the following links:**
 
-- [AI Agent Code](./hedera-agent-server/main.js)
+- [AI Agent General](./hedera-agent-web/main.js)
+- [AI Agent HCS](./hedera-agent-HCS/main.js)
 - [Webpage Agent Interactions](./de-statistics/src/actions/hederaServer.js)
