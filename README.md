@@ -22,7 +22,7 @@ DeStatistics is a Web3 platform where AI Agents verify public data, ensure trans
 
 - [Hedera AgentKit](#hedera-agentkit): With this service running on our langchain workflow we distribute rewards of our DES ERC20 token based on the AI ​​DB verification results.
 
-- [Hedera HCS10](#hcs-10): Utilizamos este standard para realizar la comunicacion entre los agentes, con el fin de mejorar la independencia y seguridad de los servicios.
+- [Hedera HCS-10](#hcs-10): Utilizamos este standard para realizar la comunicacion entre los agentes, con el fin de mejorar la independencia y seguridad de los servicios.
 
 - [Hedera EVM](#hedera-evm-interface): We used the EVM to make donations, verify usersa and verify database uploaders.
 
@@ -119,7 +119,7 @@ La interfaz EVM de hedera es una forma sencilla que los usuarios puedan acceder 
 - [Smart Contract Code](./contracts/DeStatistics.sol)
 - [Webpage Agent Interactions](./de-statistics/src/app/statistics/[db]/components/chat.js)
 
-# Hedera AgentKit and HCS10:
+# Hedera AgentKit and HCS-10:
 
 Within the entire concept of our platform, we have two functionalities that best represent the power of AI Agents with their interactions with the blockchain, decentralized data storage and communication between agents with HCS-10.
 
@@ -129,7 +129,7 @@ El nuevo standard de Hedera nos permitio realizar una comunicacion mas segurda y
 
 ### Communication:
 
-En nuestra plataforma necesitabamos dos agentes que pudieran comunicarse entre si, asi que cada uno de los agentes, los cuales estan desarrollados en javascript, debian de tener habilitado el modulo de comunicacion HCS-10Client.
+En nuestra plataforma necesitabamos dos agentes que pudieran comunicarse entre si, asi que cada uno de los agentes, los cuales estan desarrollados en javascript, debian de tener habilitado el modulo de comunicacion HCS10Client.
 
     ```javascript
     const client = new HCS10Client({
