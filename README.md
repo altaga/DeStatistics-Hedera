@@ -129,7 +129,7 @@ El nuevo standard de Hedera nos permitio realizar una comunicacion mas segurda y
 
 ### Communication:
 
-En nuestra plataforma necesitabamos dos agentes que pudieran comunicarse entre si, asi que cada uno de los agentes, los cuales estan desarrollados en javascript, debian de tener habilitado el modulo de comunicacion HCS10Client.
+- En nuestra plataforma necesitabamos dos agentes que pudieran comunicarse entre si, asi que cada uno de los agentes, los cuales estan desarrollados en javascript, debian de tener habilitado el modulo de comunicacion HCS10Client.
 
     ```javascript
     const client = new HCS10Client({
@@ -139,7 +139,7 @@ En nuestra plataforma necesitabamos dos agentes que pudieran comunicarse entre s
     });
     ```
 
-Mediante este modulo es posible mandar mensajes entre agentes de forma sencilla, en particular este codigo lo tiene el agente general, que se encarga de las queries generales de los usuarios y a su vez se comunica con el agente de rewards despues de verificar una DB.
+- Mediante este modulo es posible mandar mensajes entre agentes de forma sencilla, en particular este codigo lo tiene el agente general, que se encarga de las queries generales de los usuarios y a su vez se comunica con el agente de rewards despues de verificar una DB.
 
     ```javascript
     client
@@ -152,9 +152,9 @@ Mediante este modulo es posible mandar mensajes entre agentes de forma sencilla,
     );
     ```
 
-HCS-11 Profile Link: [HASHSCAN](https://hashscan.io/mainnet/account/0.0.9085638)
+    HCS-11 Profile Link: [HASHSCAN](https://hashscan.io/mainnet/account/0.0.9085638)
 
-Sin embargo el protocolo para recibir mensajes es mediante polling y leyendo continuamente a la red de hedera, asi que nosotros modificamos el codigo ejemplo que se nos proporciono en la pagina del hackathon para recibir los mensajes de forma mas sencilla en nuestro agente.
+- Sin embargo el protocolo para recibir mensajes es mediante polling y leyendo continuamente a la red de hedera, asi que nosotros modificamos el codigo ejemplo que se nos proporciono en la pagina del hackathon para recibir los mensajes de forma mas sencilla en nuestro agente.
 
     ```javascript
     const monitor = new AgentCommunicationHandler(
@@ -166,7 +166,7 @@ Sin embargo el protocolo para recibir mensajes es mediante polling y leyendo con
     );
     ```
 
-HCS-11 Profile Link: [HASHSCAN](https://hashscan.io/mainnet/account/0.0.9085558)
+    HCS-11 Profile Link: [HASHSCAN](https://hashscan.io/mainnet/account/0.0.9085558)
 
 ---
 **The full code for the Agents and HCS-10 Communication is in the following links:**
