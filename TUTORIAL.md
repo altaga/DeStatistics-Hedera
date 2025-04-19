@@ -36,7 +36,7 @@ Abre cualquiera de las databases de la pagina principal o busca alguna de tu int
 
 Al abrir cualquiera de las databases tendras una ventana como esta, la cual explicaremos a detalle.
 
-<img src="./images/interaction2.png" width="100%">
+<img src="./images/interaction2.png" width="80%">
 
 1. Ir al control de versiones.
 2. Seleccion de la version a visualizar.
