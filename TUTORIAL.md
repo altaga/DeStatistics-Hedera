@@ -6,19 +6,19 @@ Este es una pequeña guia para demostrar como se utiliza la plataforma web.
 
 Primero tendremos que tener ya instalado en el navegador alguna wallet como Metamask.
 
-<img src="./images/wallet1.png" width="100%">
+<img src="./images/wallet1.png" width="50%">
 
 Deberas presionar el boton de **Connect** en la esquine superior derecha.
 
-<img src="./images/wallet2.png" width="100%">
+<img src="./images/wallet2.png" width="50%">
 
 Esto abrira un Modal que nos preguntara que tipo de wallet queremos utilizar, recomendamos utilizar la conexion por wallet.
 
-<img src="./images/wallet3.png" width="100%">
+<img src="./images/wallet3.png" width="60%">
 
 Se abrirla la lista desplegable de todas las wallet que permiten conexion, en este caso seleccionaremos **Metamask**.
 
-<img src="./images/wallet4.png" width="100%">
+<img src="./images/wallet4.png" width="80%">
 
 Esto abrira la wallet y ejecutara los siguientes comandos.
 
@@ -45,15 +45,15 @@ Al abrir cualquiera de las databases tendras una ventana como esta, la cual expl
 
 La ventana del es muy sencilla, unicamente teclea la query que deseas hacerle y este te contestara lo mejor que pueda, si deseas ver como funciona tecnicamente. [CLICK HERE](./README.md#ai-extra-tools)
 
-<img src="./images/interaction3.png" width="60%">
+<img src="./images/interaction3.png" width="50%">
 
 Escribe la query en la ventana en el espacio de texto, presionando **Enter** o preisonando la flecha de envio, se mandara el mensaje, por ahora se esta pidiendo una firma para realizar las queries, sin embargo eventualmente cobraremos 1 centavo de hbar por query.
 
-<img src="./images/chat2.png" width="60%">
+<img src="./images/chat2.png" width="50%">
 
 Finalmente el agente nos proporcionara la respuesta a la query.
 
-<img src="./images/chat3.png" width="60%">
+<img src="./images/chat3.png" width="50%">
 
 La ventana de uploader, es una ventana que nos provee informacion del usuario que subio la dataset, las queries que se han hecho a la misma y a su vez una interfaz para relizar donaciones.
 
@@ -98,4 +98,4 @@ Realizar el upload de una nueva database a la palaforma es un prpceso que tenemo
 
 5. Si todo salio bien y la base de datos es aceptada ademas de poder verla en nuestra plataforma lista para usarse, obtendras una cantidad de DES tokens en Mainnet.
 
-<img src="./images/uploads4.png" width="60%">
+<img src="./images/uploads4.png" width="50%">
