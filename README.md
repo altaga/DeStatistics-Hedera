@@ -19,7 +19,7 @@ DeStatistics is a Web3 platform where AI Agents verify public data, ensure trans
 
 - [Hedera File Service](#file-storage-service): We used this service to provide a secure and decentralized source of storage for AI Agents in the databases and their verification and version control creating an auditable trail.
 
-- [Hedera Token Service](#ai-agent-tools): Utilizamos este servicio para realizar nuestro DES token.
+- [Hedera Token Service](#ai-agent-tools): We created our DES token.
 
 - [Hedera AgentKit](#hedera-agentkit): With this service running on our langchain workflow we distribute rewards of our DES ERC20 token based on the AI ​​DB verification results.
 
