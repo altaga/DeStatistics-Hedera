@@ -29,7 +29,7 @@ export default function Chat({ bucket, update }) {
   const [message, setMessage] = useState("");
   const [send, setSend] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [signature, setSignature] = useState(false);
+  const [signature, setSignature] = useState(true);
   // Hooks Privy
   const wallet = useWallets();
   const { user } = usePrivy();
