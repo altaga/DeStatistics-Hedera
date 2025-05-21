@@ -11,6 +11,7 @@ DeStatistics is a Web3 platform where AI Agents verify public data, ensure trans
 - [**Demo Video**](pending...)
 - [**HCS-10**](#hcs-10)
 - [**Hedera Agent Kit**](#ai-agent-tools)
+- [**Tutorial**](https://github.com/altaga/DeStatistics-Hedera/blob/main/TUTORIAL.md)
 
 ## System Diagram:
 

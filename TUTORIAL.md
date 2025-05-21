@@ -1,101 +1,101 @@
 # Tutorial
 
-Este es una pequeña guia para demostrar como se utiliza la plataforma web.
+This is a short guide to demonstrate how to use the web platform.
 
 ## Connect Wallet:
 
-Primero tendremos que tener ya instalado en el navegador alguna wallet como Metamask.
+First, we will need to have a wallet like Metamask already installed in the browser.
 
 <img src="./images/wallet1.png" width="50%">
 
-Deberas presionar el boton de **Connect** en la esquine superior derecha.
+You will need to press the **Connect** button in the top right corner.
 
 <img src="./images/wallet2.png" width="50%">
 
-Esto abrira un Modal que nos preguntara que tipo de wallet queremos utilizar, recomendamos utilizar la conexion por wallet.
+This will open a Modal asking us what type of wallet we want to use. We recommend using the wallet connection.
 
 <img src="./images/wallet3.png" width="60%">
 
-Se abrirla la lista desplegable de todas las wallet que permiten conexion, en este caso seleccionaremos **Metamask**.
+The drop-down list of all the wallets that allow connection will open, in this case we will select **Metamask**.
 
 <img src="./images/wallet4.png" width="80%">
 
-Esto abrira la wallet y ejecutara los siguientes comandos.
+This will open the wallet and execute the following commands.
 
 <img src="./images/wallet5.png" width="100%">
 
-- Connect: Este comando conecta la wallet con la DApp.
-- Add Hedera (only Once): Si la re de hedera no esta agregada a la Wallet esta se agrega para ser compatible con la DApp.
-- Sign In: El sitio realiza un Sign In pare asegurarse que la wallet que interacciona con la DApp es la correcta y no una wallet falsa.
+- Connect: This command connects the wallet to the DApp.
+- Add Hedera (only Once): If the Hedera network is not added to the wallet, it is added to be compatible with the DApp.
+- Sign In: The site performs a sign-in to ensure that the wallet interacting with the DApp is the correct one and not a fake one.
 
 ## Interact with Databases.
 
-Abre cualquiera de las databases de la pagina principal o busca alguna de tu interes en la barra de busqueda.
+Open any of the databases on the main page or search for one of your interest in the search bar.
 
 <img src="./images/interaction1.png" width="100%">
 
-Al abrir cualquiera de las databases tendras una ventana como esta, la cual explicaremos a detalle.
+When you open any of the databases, you will see a window like this, which we will explain in detail.
 
 <img src="./images/interaction2.png" width="80%">
 
-1. Ir al control de versiones.
-2. Seleccion de la version a visualizar.
-3. Seleccion del pais del cual queremos ver los datos.
-4. Adjuntar la base de datos a la query que hagamos al aistente.
+1. Go to version control.
+2. Select the version you want to view.
+3. Select the country you want to view data for.
+4. Attach the database to the query you make in the wizard.
 
-La ventana del es muy sencilla, unicamente teclea la query que deseas hacerle y este te contestara lo mejor que pueda, si deseas ver como funciona tecnicamente. [CLICK HERE](./README.md#ai-extra-tools)
+The window is very simple, just type the query you want to make and it will answer you as best it can, if you want to see how it works technically. [CLICK HERE](./README.md#ai-extra-tools)
 
 <img src="./images/interaction3.png" width="50%">
 
-Escribe la query en la ventana en el espacio de texto, presionando **Enter** o preisonando la flecha de envio, se mandara el mensaje, por ahora se esta pidiendo una firma para realizar las queries, sin embargo eventualmente cobraremos 1 centavo de hbar por query.
+Type the query in the window in the text space, pressing **Enter** or pressing the send arrow, the message will be sent, for now a signature is requested to make the queries, however eventually we will charge 1 cent of hbar per query.
 
 <img src="./images/chat2.png" width="50%">
 
-Finalmente el agente nos proporcionara la respuesta a la query.
+Finally the agent will provide us with the answer to the query.
 
 <img src="./images/chat3.png" width="50%">
 
-La ventana de uploader, es una ventana que nos provee informacion del usuario que subio la dataset, las queries que se han hecho a la misma y a su vez una interfaz para relizar donaciones.
+The uploader window provides information about the user who uploaded the dataset, the queries that have been made to it, and an interface for making donations.
 
 <img src="./images/interaction4.png" width="100%">
 
-1. Nombre del usuario.
-2. Address del usuario en Hedera Mainnet.
-3. Numero que queries que se han hecho sobre la datase.
-4. Cantidad en Hbar que ha recibido como donaciones el usuario por la DB.
-5. Cantidad que el usuario desea donar a la DB.
-6. Boton para ejecutar una donacion al usuario.
+1. Username.
+2. User address on Hedera Mainnet.
+3. Number of requests made on the database.
+4. Amount in Hbar the user has received as donations from the database.
+5. Amount the user wishes to donate to the database.
+6. Button to make a donation to the user.
 
 ## Version Control:
 
-En el caso de la pantalla de control de versiones, esta nos permite ver las diferencias entre cada una de las versiones de las databases, esto con el fin de asegurarnos que la data que verifico la AI fue correctamente aceptada en la plataforma.
+In the case of the version control screen, it allows us to see the differences between each of the database versions, in order to ensure that the data verified by the AI ​​was correctly accepted into the platform.
 
 <img src="./images/versions1.png" width="100%">
 
-En la seccion inferior de las databases podras ver todos los cambios que hay de una base a otra.
+In the lower section of the databases you can see all the changes that have occurred from one database to another.
 
 <img src="./images/versions2.png" width="100%">
 
 ## Upload:
 
-Realizar el upload de una nueva database a la palaforma es un prpceso que tenemos 100% automatizado, te mostramos como se realiza.
+Uploading a new database to the platform is a 100% automated process. We'll show you how to do it.
 
-1. Presiona el boton de Upload que esta a la derecha del boton de Disconnect.
+1. Press the Upload button to the right of the Disconnect button.
 
 <img src="./images/uploads1.png" width="100%">
 
-2. Una vez en la siguiente pantalla seleccionaremos si es una nueva version de una database ya existente o una database completamente nueva.
+2. Once on the next screen we will select whether it is a new version of an existing database or a completely new database.
 
 <img src="./images/uploads2.png" width="100%">
 
-3. Segun sea el caso tendras que rellenar los campos de Title, Description y Source. Finalmente agregando en el campo de Choose File el archivo con la Database. Dejamos en este repositorio un ejemplo de una base de datos correctamente formateada y lista pra subir. [CLICK HERE](./example-db/Taxes%20on%20exports.csv)
+3. Depending on the case, you'll need to fill in the Title, Description, and Source fields. Finally, add the file containing the Database to the Choose File field. In this repository, we've provided an example of a properly formatted database ready for upload. [CLICK HERE](./example-db/Taxes%20on%20exports.csv)
 
 <img src="./images/uploads3.png" width="100%">
 
-4. Finalmente al presionar Upload and Verify solo tendras que esperar un poco menos de un minuto para ver el resultado.
+4. Finally, when you press Upload and Verify, you'll only have to wait a little less than a minute to see the result.
 
 <img src="./images/upload3.png" width="100%">
 
-5. Si todo salio bien y la base de datos es aceptada ademas de poder verla en nuestra plataforma lista para usarse, obtendras una cantidad de DES tokens en Mainnet.
+5. If all goes well and the database is accepted, and you can view it on our platform ready to use, you will receive a number of DES tokens on Mainnet.
 
 <img src="./images/uploads4.png" width="50%">
